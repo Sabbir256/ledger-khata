@@ -1,8 +1,12 @@
 require('dotenv').config();
 const Database = require('better-sqlite3-multiple-ciphers');
+const { app } = require('electron');
+const path = require('path');
+
+const databaseUrl = path.join(app.getPath('home'), process.env.DATABASE_URL);
 
 // Open database with SQLCipher encryption
-const db = new Database('db/ledger-khata.db', {
+const db = new Database(databaseUrl, {
     verbose: console.log,
     cipher: process.env.DB_CIPHER,
     password: process.env.DB_PASSWORD,
