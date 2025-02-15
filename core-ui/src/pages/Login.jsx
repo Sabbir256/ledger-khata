@@ -14,14 +14,15 @@ export default function Login({ setAuth }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const result = await window.api.invoke('authenticate', data);
-
-        if (result.success) {
-            setAuth(result.success);
-        } else {
-            setErrorMsg('Invalid username or password');
-        }
+        window.api.invoke('authenticate', data).then((result) => {
+            if (result.success) {
+                setAuth(result.success);
+            } else {
+                setErrorMsg('Invalid username or password');
+            }
+        })
     }
+    
     return (
         <>
             <div className="w-full h-screen flex justify-center items-center bg-gray-100">

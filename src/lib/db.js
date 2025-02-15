@@ -12,16 +12,6 @@ const db = new Database(databaseUrl, {
     password: process.env.DB_PASSWORD,
 });
 
-// Create transactions table if it doesn't exist
-// db.exec(`
-//     CREATE TABLE IF NOT EXISTS transactions (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         amount REAL,
-//         description TEXT,
-//         date TEXT DEFAULT CURRENT_TIMESTAMP
-//     )
-// `);
-
 // Create products table if it doesn't exist
 db.exec(`
     CREATE TABLE IF NOT EXISTS products (
@@ -32,12 +22,42 @@ db.exec(`
     ) STRICT
 `);
 
-async function insertProduct({name, price, description}) {
+db.exec(`
+    CREATE TABLE IF NOT EXISTS sellers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        contact TEXT
+    ) STRICT
+`);
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS purchase_orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        seller_id INTEGER,
+        purchase_date TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (seller_id) REFERENCES sellers(id)
+    ) STRICT
+`);
+
+db.exec(`
+    CREATE TABLE purchase_order_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        purchase_order_id INTEGER,
+        product_id INTEGER,
+        quantity INTEGER,
+        cost_price REAL,
+        FOREIGN KEY (purchase_order_id) REFERENCES purchase_orders(id),
+        FOREIGN KEY (product_id) REFERENCES products(id)
+    ) STRICT
+`);
+
+
+function insertProduct({ name, price, description }) {
     const stmt = db.prepare('INSERT INTO products (name, price, description) VALUES (?, ?, ?)');
     return stmt.run(name, price, description);
 }
 
-async function getProducts() {
+function getProducts() {
     return db.prepare('SELECT * FROM products').all();
 }
 

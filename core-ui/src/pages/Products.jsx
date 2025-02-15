@@ -24,18 +24,19 @@ export default function Products() {
     setNewProduct({ ...newProduct, [e.target.name]: value });
   }
 
-  const handleAddProduct= async (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault();
 
     if (newProduct.name && newProduct.price) {
-      console.log('here!');
       try {
-        await window.api.invoke('insert-product', newProduct);
-        const data = await window.api.invoke('get-products');
-        setProducts(data);
-        setNewProduct({});
-        setShowForm(false);
-      } catch(error) {
+        window.api.invoke('insert-product', newProduct).then(() => {
+          window.api.invoke('get-products').then((data) => {
+            setProducts(data);
+            setNewProduct({});
+            setShowForm(false);
+          })
+        });
+      } catch (error) {
         console.log(error);
       }
     }
@@ -88,7 +89,11 @@ export default function Products() {
           </div>
         </form>}
 
-        <div className="bg-white rounded-xl px-6 py-4 mt-4">
+        {products.length === 0 && <div className="bg-white px-6 py-4 rounded-lg mt-4 text-sm">
+          <span>No products found, please add new products (click on the &quot;<strong>+ add new</strong>&quot; button).</span>
+        </div>}
+
+        {products.length > 0 && <div className="bg-white rounded-xl px-6 py-4 mt-4">
           <table className="w-full">
             <thead className="text-sm">
               <tr className="border-b border-gray-200">
@@ -107,7 +112,7 @@ export default function Products() {
               ))}
             </tbody>
           </table>
-        </div>
+        </div>}
       </div>
     </>
   );
