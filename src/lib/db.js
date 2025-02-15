@@ -26,7 +26,8 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS sellers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        contact TEXT
+        contact TEXT,
+        address TEXT
     ) STRICT
 `);
 
@@ -40,7 +41,7 @@ db.exec(`
 `);
 
 db.exec(`
-    CREATE TABLE purchase_order_items (
+    CREATE TABLE IF NOT EXISTS purchase_order_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         purchase_order_id INTEGER,
         product_id INTEGER,
@@ -61,7 +62,18 @@ function getProducts() {
     return db.prepare('SELECT * FROM products').all();
 }
 
+function insertSeller({name, contact, address}) {
+    const stmt = db.prepare('INSERT INTO sellers (name, contact, address) VALUES (?, ?, ?)');
+    return stmt.run(name, contact, address);
+}
+
+function getSellers() {
+    return db.prepare('SELECT * FROM sellers').all();
+}
+
 module.exports = {
     insertProduct,
-    getProducts
+    getProducts,
+    insertSeller,
+    getSellers
 };

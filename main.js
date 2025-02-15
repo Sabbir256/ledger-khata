@@ -33,6 +33,8 @@ app.on('window-all-closed', () => {
 });
 
 
-ipcMain.handle('authenticate', async (event, data) => verifyLogin(data));
-ipcMain.handle('get-products', async (event) => db.getProducts());
-ipcMain.handle('insert-product', async (event, data) => db.insertProduct(data));
+ipcMain.handle('authenticate', (event, data) => verifyLogin(data));
+ipcMain.handle('get-products', (event) => db.getProducts());
+ipcMain.handle('insert-product', (event, data) => db.insertProduct(data));
+ipcMain.handle('get-sellers', (event, data) => db.getSellers());
+ipcMain.handle('insert-seller', (event, data) => db.insertSeller(data));
