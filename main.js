@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { verifyLogin } = require('./src/helpers/auth');
+const { insertProduct, getProducts } = require('./src/lib/encrypt');
 
 let mainWindow;
 
@@ -34,4 +35,13 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('authenticate', async (event, data) => {
     return await verifyLogin(data);
-})
+});
+
+ipcMain.handle('get-products', async (event) => {
+    return await getProducts();
+});
+
+ipcMain.handle('insert-product', async (event, data) => {
+    const result = await insertProduct(data);
+    console.log(result);
+});

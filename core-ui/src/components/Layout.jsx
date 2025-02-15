@@ -2,11 +2,11 @@ import { Outlet } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 
 export default function Layout() {
-    const activeLinkStyle = "text-sky-500 font-medium";
+    const activeLinkStyle = "text-lime-700 font-medium";
 
     return (
         <div className="flex">
-            <nav className="min-w-[180px] p-3 0 h-screen rounded">
+            <nav className="min-w-[180px] p-4 0 h-screen rounded">
                 <ul className="flex flex-col gap-2 text-sm">
                     <li>
                         <NavLink

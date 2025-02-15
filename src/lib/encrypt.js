@@ -22,12 +22,26 @@ const db = new Database(databaseUrl, {
 //     )
 // `);
 
+// Create products table if it doesn't exist
+db.exec(`
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        price REAL,
+        description TEXT
+    ) STRICT
+`);
+
+async function insertProduct({name, price, description}) {
+    const stmt = db.prepare('INSERT INTO products (name, price, description) VALUES (?, ?, ?)');
+    return stmt.run(name, price, description);
+}
+
+async function getProducts() {
+    return db.prepare('SELECT * FROM products').all();
+}
+
 module.exports = {
-    insertTransaction(amount, description) {
-        const stmt = db.prepare('INSERT INTO transactions (amount, description) VALUES (?, ?)');
-        return stmt.run(amount, description);
-    },
-    getTransactions() {
-        return db.prepare('SELECT * FROM transactions').all();
-    }
+    insertProduct,
+    getProducts
 };
