@@ -1,39 +1,37 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const { verifyLogin } = require('./utils/auth');
+const { verifyLogin } = require('./src/helpers/auth');
 
 let mainWindow;
 
-function createWindow(view) {
+app.whenReady().then(() => {
     mainWindow = new BrowserWindow({
-        width: 1080,
-        height: 720,
+        width: 1000,
+        height: 700,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            contextIsolation: true,
-            enableRemoteModule: false
+            preload: path.join(__dirname, 'src/preload.js'),
+            nodeIntegration: false
         }
     });
 
-    mainWindow.loadFile(`views/${view}.html`);
-}
+    // Load React during development
+    if (process.env.NODE_ENV === 'development') {
+        mainWindow.loadURL('http://localhost:5173');
+    } else {
+        // Load built React app in production
+        mainWindow.loadFile(path.join(__dirname, 'core-ui/dist/index.html'));
+    }
 
-app.whenReady().then(() => {
-    createWindow('login'); // Start with the login view
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow('login');
+    mainWindow.on('closed', () => {
+        mainWindow = null;
     });
-});
-
-ipcMain.handle('navigate', (event, view) => {
-    mainWindow.loadFile(`views/${view}.html`);
 });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
 
-ipcMain.handle('admin-login', async (event, data) => {
+
+ipcMain.handle('authenticate', async (event, data) => {
     return await verifyLogin(data);
 })
