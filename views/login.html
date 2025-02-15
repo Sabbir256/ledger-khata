@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ledger Khata</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../assets/static/output.css" />
+    <script defer src="../renderer/login.js"></script>
+</head>
+
+<body>
+    <div class="w-full h-screen flex justify-center items-center bg-gray-100">
+        <form class="bg-white rounded-2xl px-6 py-10 text-sm" id="login-form">
+            <div class="flex flex-col gap-3">
+                <input type="text" id="username" placeholder="Username"
+                    class="border border-gray-200 px-2 py-1 rounded min-w-[220px] focus:outline-sky-400">
+                <input type="password" id="password" placeholder="Password"
+                    class="border border-gray-200 px-2 py-1 rounded min-w-[220px] focus:outline-sky-400">
+            </div>
+            <p id="error-msg" class="text-red-500 hidden"></p>
+            <button type="submit" id="login-btn"
+                class="bg-green-500 w-full text-white rounded py-1.5 mt-2.5 hover:cursor-pointer hover:bg-green-600">login</button>
+        </form>
+    </div>
+</body>
+
+</html>

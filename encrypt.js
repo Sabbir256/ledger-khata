@@ -13,14 +13,14 @@ const db = new Database(databaseUrl, {
 });
 
 // Create transactions table if it doesn't exist
-db.exec(`
-    CREATE TABLE IF NOT EXISTS transactions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        amount REAL,
-        description TEXT,
-        date TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-`);
+// db.exec(`
+//     CREATE TABLE IF NOT EXISTS transactions (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         amount REAL,
+//         description TEXT,
+//         date TEXT DEFAULT CURRENT_TIMESTAMP
+//     )
+// `);
 
 module.exports = {
     insertTransaction(amount, description) {

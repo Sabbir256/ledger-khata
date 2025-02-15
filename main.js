@@ -1,28 +1,39 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const Database = require('./encrypt'); // Secure database handler
+const { verifyLogin } = require('./utils/auth');
 
-let win;
+let mainWindow;
 
-app.whenReady().then(() => {
-    win = new BrowserWindow({
+function createWindow(view) {
+    mainWindow = new BrowserWindow({
         width: 1080,
         height: 720,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'), // Improves security
+            preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false
         }
     });
 
-    win.loadFile('index.html');
+    mainWindow.loadFile(`views/${view}.html`);
+}
+
+app.whenReady().then(() => {
+    createWindow('login'); // Start with the login view
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) createWindow('login');
+    });
 });
 
-// Handle database actions from renderer
-ipcMain.handle('insert-transaction', async (event, data) => {
-    return Database.insertTransaction(data.amount, data.description);
+ipcMain.handle('navigate', (event, view) => {
+    mainWindow.loadFile(`views/${view}.html`);
 });
 
-ipcMain.handle('fetch-transactions', async () => {
-    return Database.getTransactions();
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
 });
+
+ipcMain.handle('admin-login', async (event, data) => {
+    return await verifyLogin(data);
+})
