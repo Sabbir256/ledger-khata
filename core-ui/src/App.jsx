@@ -1,7 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Products from './pages/Products';
 import { useState } from 'react';
+import Layout from './components/Layout';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,8 +11,10 @@ export default function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={isLoggedIn ? <Navigate to="/home" /> : <Login setAuth={setIsLoggedIn} />} />
-        <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />} />
+        <Route path="/" element={isLoggedIn ? <Layout /> : <Login setAuth={setIsLoggedIn} />}>
+          <Route index element={<Home />} />
+          <Route path='/products' element={<Products />} />
+        </Route>
       </Routes>
     </div>
   );
