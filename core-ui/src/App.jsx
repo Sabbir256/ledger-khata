@@ -6,6 +6,8 @@ import { useState } from 'react';
 import Layout from './components/Layout';
 import Sellers from './pages/Sellers';
 import Purchase from './pages/Purchase';
+import Sale from './pages/Sale';
+import Customers from './pages/Customers';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,6 +19,8 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path='/products' element={<Products />} />
           <Route path='/sellers' element={<Sellers />}/>
+          <Route path='/customers' element={<Customers />}/>
+          <Route path='/sale' element={<Sale />} />
           <Route path='/purchase' element={<Purchase />} />
         </Route>
       </Routes>

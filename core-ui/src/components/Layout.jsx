@@ -2,24 +2,43 @@ import { Outlet } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 
 export default function Layout() {
-    const activeLinkStyle = "text-lime-700 font-medium";
+    const styles = {
+        active: "nav-link active",
+        inactive: "nav-link"
+    }
 
     return (
         <div className="flex">
             <nav className="min-w-[180px] p-4 0 h-screen rounded">
-                <ul className="flex flex-col gap-2 text-sm">
-                    <li>
+                <ul className="flex flex-col gap-2 text-sm w-full">
+                    <li className='block'>
                         <NavLink
                             to="/"
-                            className={({ isActive }) => isActive ? activeLinkStyle : ""}
+                            className={({ isActive }) => isActive ? styles.active : styles.inactive}
                         >
                             Home
                         </NavLink>
                     </li>
                     <li>
                         <NavLink
+                            to="/sale"
+                            className={({ isActive }) => isActive ? styles.active : styles.inactive}
+                        >
+                            Sale
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            to="/purchase"
+                            className={({ isActive }) => isActive ? styles.active : styles.inactive}
+                        >
+                            Purchase
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
                             to="/products"
-                            className={({ isActive }) => isActive ? activeLinkStyle : ""}
+                            className={({ isActive }) => isActive ? styles.active : styles.inactive}
                         >
                             Products
                         </NavLink>
@@ -27,17 +46,17 @@ export default function Layout() {
                     <li>
                         <NavLink
                             to="/sellers"
-                            className={({ isActive }) => isActive ? activeLinkStyle : ""}
+                            className={({ isActive }) => isActive ? styles.active : styles.inactive}
                         >
                             Sellers
                         </NavLink>
                     </li>
                     <li>
                         <NavLink
-                            to="/purchase"
-                            className={({ isActive }) => isActive ? activeLinkStyle : ""}
+                            to="/customers"
+                            className={({ isActive }) => isActive ? styles.active : styles.inactive}
                         >
-                            Purchase
+                            Customers
                         </NavLink>
                     </li>
                 </ul>

@@ -22,3 +22,18 @@
 * {
     font-family: "Roboto", sans-serif;
 }
+
+
+.nav-link {
+    padding: 8px;
+    display: block;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.25rem;
+}
+
+.nav-link.active {
+    font-weight: 500;
+    background-color: #BEF264;
+    padding: 8px;
+    /* margin-right: 0.5rem; */
+}

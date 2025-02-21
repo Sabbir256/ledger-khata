@@ -1,52 +1,48 @@
 import { useEffect, useState } from "react";
 
-export default function Sellers() {
-    const [sellers, setSellers] = useState([]);
+export default function Customers() {
+    const [customers, setCustomers] = useState([]);
     const [showForm, setShowForm] = useState(false);
-    const [newSeller, setNewSeller] = useState({
+    const [formData, setFormData] = useState({
         name: '',
         contact: '',
         address: ''
     });
 
     useEffect(() => {
-        window.api.invoke('get-sellers').then((data) => {
-            setSellers(data);
+        window.api.invoke('get-customers').then((data) => {
+            setCustomers(data);
         });
     }, []);
 
     const handleChange = (e) => {
-        setNewSeller({ ...newSeller, [e.target.name]: e.target.value });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (newSeller.name && newSeller.contact) {
-            try {
-                window.api.invoke('insert-seller', newSeller).then(() => {
-                    window.api.invoke('get-sellers').then((data) => {
-                        setSellers(data);
-                        setNewSeller({});
-                        setShowForm(false);
-                    })
-                });
-            } catch (error) {
-                console.log(error);
-            }
+        if (formData.name && formData.contact) {
+            window.api.invoke('insert-customer', formData).then(() => {
+                window.api.invoke('get-customers').then((data) => {
+                    setCustomers(data);
+                    setFormData({});
+                    setShowForm(false);
+                })
+            });
         }
     }
 
     const handleCancel = () => {
         setShowForm(false);
-        setNewSeller({});
+        setFormData({});
     }
 
     return (
         <>
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto transition-all duration-200 ease-in">
                 <div className="flex justify-between">
-                    <h1 className="text-2xl font-medium">Sellers</h1>
+                    <h1 className="text-2xl font-medium">Customers</h1>
                     <button
                         className="bg-lime-300 hover:bg-lime-400 rounded px-3 text-sm"
                         onClick={() => setShowForm(true)}
@@ -79,11 +75,11 @@ export default function Sellers() {
                     </div>
                 </form>}
 
-                {sellers.length === 0 && <div className="bg-white px-6 py-4 rounded-lg mt-4 text-sm">
-                    <span>There are no sellers in the system, please add new sellers (click on the &quot;<strong>+ add new</strong>&quot; button).</span>
+                {customers.length === 0 && <div className="bg-white px-6 py-4 rounded-lg mt-4 text-sm">
+                    <span>There are no customers at the moment, please add new customers (click on the &quot;<strong>+ add new</strong>&quot; button).</span>
                 </div>}
 
-                {sellers.length > 0 && <div className="bg-white rounded-xl px-6 py-4 mt-4">
+                {customers.length > 0 && <div className="bg-white rounded-xl px-6 py-4 mt-4">
                     <table className="w-full">
                         <thead className="text-sm">
                             <tr className="border-b border-gray-200">
@@ -93,7 +89,7 @@ export default function Sellers() {
                             </tr>
                         </thead>
                         <tbody className="text-sm text-gray-800">
-                            {sellers.map((seller) => (
+                            {customers.map((seller) => (
                                 <tr key={seller.id} className="border-b border-gray-100">
                                     <td className="border-r py-1.5 px-2 font-medium">{seller.name}</td>
                                     <td className="border-r py-1.5 px-2">{seller.contact}</td>

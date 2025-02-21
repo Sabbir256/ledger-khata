@@ -26,7 +26,16 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS sellers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        contact TEXT,
+        contact TEXT NOT NULL,
+        address TEXT
+    ) STRICT
+`);
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS customers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        contact TEXT NOT NULL,
         address TEXT
     ) STRICT
 `);
@@ -41,6 +50,21 @@ db.exec(`
         cost REAL,
         paid REAL,
         FOREIGN KEY (seller_id) REFERENCES sellers(id),
+        FOREIGN KEY (product_id) REFERENCES products(id)
+    ) STRICT
+`);
+
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS sales_orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER,
+        product_id INTEGER,
+        sold_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        quantity INTEGER,
+        price REAL,
+        payment REAL,
+        FOREIGN KEY (customer_id) REFERENCES customers(id),
         FOREIGN KEY (product_id) REFERENCES products(id)
     ) STRICT
 `);
@@ -63,7 +87,16 @@ function getSellers() {
     return db.prepare('SELECT * FROM sellers').all();
 }
 
-function insertPurchaseOrders({seller_id, product_id, purchase_date, quantity, cost, paid}) {
+function insertCustomer({name, contact, address}) {
+    const stmt = db.prepare('INSERT INTO customers (name, contact, address) VALUES (?, ?, ?)');
+    return stmt.run(name, contact, address);
+}
+
+function getCustomers() {
+    return db.prepare('SELECT * FROM customers').all();
+}
+
+function insertPurchaseOrder({seller_id, product_id, purchase_date, quantity, cost, paid}) {
     const stmt = db.prepare('INSERT INTO purchase_orders (seller_id, product_id, purchase_date, quantity, cost, paid) VALUES (?, ?, ?, ?, ?, ?)');
     return stmt.run(seller_id, product_id, purchase_date, quantity, cost, paid);
 }
@@ -72,11 +105,24 @@ function getPurchaseOrders() {
     return db.prepare('SELECT * FROM purchase_orders ORDER BY purchase_date DESC').all();
 }
 
+function insertSalesOrder({customer_id, product_id, sold_at, quantity, price, payment}) {
+    const stmt = db.prepare('INSERT INTO sales_orders (customer_id, product_id, sold_at, quantity, price, payment) VALUES (?, ?, ?, ?, ?, ?)');
+    return stmt.run(customer_id, product_id, sold_at, quantity, price, payment);
+}
+
+function getSalesOrders() {
+    return db.prepare('SELECT * FROM sales_orders ORDER BY sold_at DESC').all();
+}
+
 module.exports = {
     insertProduct,
     getProducts,
     insertSeller,
     getSellers,
-    insertPurchaseOrders,
+    insertPurchaseOrder,
     getPurchaseOrders,
+    insertCustomer,
+    getCustomers,
+    insertSalesOrder,
+    getSalesOrders
 };

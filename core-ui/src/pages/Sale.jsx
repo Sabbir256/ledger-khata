@@ -3,24 +3,24 @@ import { useEffect, useState } from "react";
 import Select from 'react-select';
 import DateDisplay from "../components/DateDisplay";
 
-export default function Purchase() {
-    const [sellersOptions, setSellersOptions] = useState([]);
+export default function Sale() {
+    const [customerOptions, setCustomerOptions] = useState([]);
     const [productsOptions, setProductsOptions] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({});
-    const [purchaseHistory, setPurchaseHistory] = useState([]);
+    const [salesHistory, setSalesHistory] = useState([]);
 
     useEffect(() => {
-        window.api.invoke('get-sellers').then((result) => {
-            setSellersOptions(result.map((seller) => ({ label: seller.name, value: seller.id })));
+        window.api.invoke('get-customers').then((result) => {
+            setCustomerOptions(result.map((cust) => ({ label: cust.name, value: cust.id })));
         });
 
         window.api.invoke('get-products').then(result => {
             setProductsOptions(result.map((product) => ({ label: product.name, value: product.id })));
         })
 
-        window.api.invoke('get-purchase-orders').then((data) => {
-            setPurchaseHistory(data);
+        window.api.invoke('get-sales-orders').then((data) => {
+            setSalesHistory(data);
         });
     }, []);
 
@@ -31,9 +31,9 @@ export default function Purchase() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        window.api.invoke('insert-purchase-order', formData).then(() => {
-            window.api.invoke('get-purchase-orders').then((data) => {
-                setPurchaseHistory(data);
+        window.api.invoke('insert-sales-order', formData).then(() => {
+            window.api.invoke('get-sales-orders').then((data) => {
+                setSalesHistory(data);
                 setFormData({});
                 setShowForm(false);
             });
@@ -57,7 +57,7 @@ export default function Purchase() {
         <>
             <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between">
-                    <h1 className="text-2xl font-medium">Purchase History</h1>
+                    <h1 className="text-2xl font-medium">Sales History</h1>
                     <button
                         className="bg-lime-300 hover:bg-lime-400 rounded px-3 text-sm"
                         onClick={() => setShowForm(true)}
@@ -68,22 +68,22 @@ export default function Purchase() {
                     <div className="flex flex-col gap-5">
                         <div className="flex justify-between gap-5">
                             <div className="flex flex-col text-sm gap-1 flex-grow">
-                                <label className="font-medium">Seller</label>
+                                <label className="font-medium">Customer</label>
                                 <Select
-                                    options={sellersOptions}
+                                    options={customerOptions}
                                     styles={customStyles}
-                                    onChange={(option) => handleChange('seller_id', option.value)}
+                                    onChange={(option) => handleChange('customer_id', option.value)}
                                     isSearchable={true} />
                             </div>
 
                             <div className="flex flex-col text-sm gap-1">
-                                <label htmlFor="purchase_date" className="font-medium">Purchase Date</label>
+                                <label htmlFor="sold_at" className="font-medium">Date</label>
                                 <input
-                                    name="purchase_date"
+                                    name="sold_at"
                                     type="date"
                                     required={true}
                                     max={new Date().toISOString().split('T')[0]}
-                                    onChange={(e) => handleChange('purchase_date', e.target.value)}
+                                    onChange={(e) => handleChange('sold_at', e.target.value)}
                                     className="border border-gray-200 rounded p-2 outline-sky-200 min-w-[215px]" />
                             </div>
                         </div>
@@ -109,23 +109,23 @@ export default function Purchase() {
                             </div>
 
                             <div className="flex flex-col text-sm gap-1">
-                                <label htmlFor="cost" className="font-medium">Cost (Total)</label>
+                                <label htmlFor="price" className="font-medium">Price</label>
                                 <input
-                                    name="cost"
+                                    name="price"
                                     type="number"
                                     step="any"
-                                    onChange={e => handleChange('cost', Number(e.target.value))}
+                                    onChange={e => handleChange('price', Number(e.target.value))}
                                     className="border border-gray-200 rounded p-2 outline-sky-200"
                                     required={true} />
                             </div>
 
                             <div className="flex flex-col text-sm gap-1">
-                                <label htmlFor="paid" className="font-medium">Paid</label>
+                                <label htmlFor="payment" className="font-medium">Payment</label>
                                 <input
-                                    name="paid"
+                                    name="payment"
                                     type="number"
                                     step="any"
-                                    onChange={e => handleChange('paid', Number(e.target.value))}
+                                    onChange={e => handleChange('payment', Number(e.target.value))}
                                     className="border border-gray-200 rounded p-2 outline-sky-200"
                                     required={true} />
                             </div>
@@ -138,55 +138,50 @@ export default function Purchase() {
                     </div>
                 </form>}
 
-                {purchaseHistory.length === 0 && <div className="bg-white px-6 py-4 rounded-lg mt-4 text-sm">
+                {salesHistory.length === 0 && <div className="bg-white px-6 py-4 rounded-lg mt-4 text-sm">
                     <span>No products found, please add new products (click on the &quot;<strong>+ add new</strong>&quot; button).</span>
                 </div>}
 
-                {purchaseHistory.length > 0 && <div className="bg-white rounded-xl px-6 py-4 mt-4">
+                {salesHistory.length > 0 && <div className="bg-white rounded-xl px-6 py-4 mt-4">
                     <table className="w-full">
                         <thead className="text-sm">
                             <tr className="border-b border-gray-200">
                                 <th className="text-left p-2.5">Seller</th>
                                 <th className="text-left p-2.5">Product</th>
                                 <th className="text-left p-2.5">Order Date</th>
-                                <th className="text-right p-2.5">Cost</th>
-                                <th className="text-right p-2.5">Paid</th>
+                                <th className="text-right p-2.5">Price</th>
+                                <th className="text-right p-2.5">Payment</th>
                             </tr>
                         </thead>
                         <tbody className="text-sm text-gray-800">
-                            {purchaseHistory.map((history) => (
-                                <PurchaseHistoryRow
+                            {salesHistory.map((history) => (
+                                <SalesHistoryRow
                                     key={history.id}
                                     history={history}
-                                    sellersOptions={sellersOptions}
-                                    productsOptions={productsOptions}
+                                    customers={customerOptions}
+                                    products={productsOptions}
                                 />
                             ))}
-                            {/* <tr>
-                                <td colSpan="3" className="p-2 font-medium text-right">Total</td>
-                                <td className="p-2 text-right font-medium">{purchaseHistory.reduce((acc, curr) => acc + curr.cost, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                <td className="p-2 text-right font-medium">{purchaseHistory.reduce((acc, curr) => acc + curr.paid, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            </tr> */}
                         </tbody>
                     </table>
                 </div>}
-            </div> 
+            </div>
         </>
     );
 }
 
 
-const PurchaseHistoryRow = ({ history, sellersOptions, productsOptions }) => {
-    const sellerLabel = sellersOptions.find(opt => opt.value === history.seller_id)?.label || 'Unknown Seller';
-    const productLabel = productsOptions.find(opt => opt.value === history.product_id)?.label || 'Unknown Product';
+const SalesHistoryRow = ({ history, customers, products }) => {
+    const customerName = customers.find(opt => opt.value === history.customer_id)?.label || 'Unknown Customer';
+    const productName = products.find(opt => opt.value === history.product_id)?.label || 'Unknown Product';
 
     return (
         <tr key={history.id} className="border-b border-gray-100">
-            <td className="p-2">{sellerLabel}</td>
-            <td className="p-2">{productLabel}</td>
-            <td className="p-2">{<DateDisplay date={history.purchase_date} />}</td>
-            <td className="p-2 text-right">{history.cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <td className="p-2 text-right">{history.paid.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td className="p-2">{customerName}</td>
+            <td className="p-2">{productName}</td>
+            <td className="p-2">{<DateDisplay date={history.sold_at} />}</td>
+            <td className="p-2 text-right">{history.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td className="p-2 text-right">{history.payment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
         </tr>
     );
 };
