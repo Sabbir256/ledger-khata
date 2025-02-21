@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Customers() {
     const [customers, setCustomers] = useState([]);
@@ -83,17 +84,19 @@ export default function Customers() {
                     <table className="w-full">
                         <thead className="text-sm">
                             <tr className="border-b border-gray-200">
-                                <th className="text-left py-1.5 px-2 border-r">Name</th>
-                                <th className="text-left py-1.5 px-2 border-r">Contact</th>
-                                <th className="text-left py-1.5 px-2">Address</th>
+                                <th className="text-left p-2.5">Name</th>
+                                <th className="text-left p-2.5">Contact</th>
+                                <th className="text-left p-2.5">Address</th>
                             </tr>
                         </thead>
                         <tbody className="text-sm text-gray-800">
-                            {customers.map((seller) => (
-                                <tr key={seller.id} className="border-b border-gray-100">
-                                    <td className="border-r py-1.5 px-2 font-medium">{seller.name}</td>
-                                    <td className="border-r py-1.5 px-2">{seller.contact}</td>
-                                    <td className="py-1.5 px-2">{seller.address}</td>
+                            {customers.map((cust) => (
+                                <tr key={cust.id} className="border-b border-gray-100">
+                                    <td className="p-2 font-medium">
+                                        <Link to={`/customers/${cust.id}`} className="text-blue-500 hover:underline">{cust.name}</Link>
+                                    </td>
+                                    <td className="p-2">{cust.contact}</td>
+                                    <td className="p-2">{cust.address}</td>
                                 </tr>
                             ))}
                         </tbody>

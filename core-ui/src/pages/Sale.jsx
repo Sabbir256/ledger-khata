@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Select from 'react-select';
 import DateDisplay from "../components/DateDisplay";
+import { Link } from "react-router-dom";
 
 export default function Sale() {
     const [customerOptions, setCustomerOptions] = useState([]);
@@ -177,7 +178,9 @@ const SalesHistoryRow = ({ history, customers, products }) => {
 
     return (
         <tr key={history.id} className="border-b border-gray-100">
-            <td className="p-2">{customerName}</td>
+            <td className="p-2">
+                <Link to={`/customers/${history.customer_id}`} className="text-blue-500 hover:underline">{customerName}</Link>
+            </td>
             <td className="p-2">{productName}</td>
             <td className="p-2">{<DateDisplay date={history.sold_at} />}</td>
             <td className="p-2 text-right">{history.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
