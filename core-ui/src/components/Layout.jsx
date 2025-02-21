@@ -32,6 +32,14 @@ export default function Layout() {
                             Sellers
                         </NavLink>
                     </li>
+                    <li>
+                        <NavLink
+                            to="/purchase"
+                            className={({ isActive }) => isActive ? activeLinkStyle : ""}
+                        >
+                            Purchase
+                        </NavLink>
+                    </li>
                 </ul>
             </nav>
 

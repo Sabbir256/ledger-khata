@@ -35,23 +35,15 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS purchase_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         seller_id INTEGER,
-        purchase_date TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (seller_id) REFERENCES sellers(id)
-    ) STRICT
-`);
-
-db.exec(`
-    CREATE TABLE IF NOT EXISTS purchase_order_items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        purchase_order_id INTEGER,
         product_id INTEGER,
+        purchase_date TEXT DEFAULT CURRENT_TIMESTAMP,
         quantity INTEGER,
-        cost_price REAL,
-        FOREIGN KEY (purchase_order_id) REFERENCES purchase_orders(id),
+        cost REAL,
+        paid REAL,
+        FOREIGN KEY (seller_id) REFERENCES sellers(id),
         FOREIGN KEY (product_id) REFERENCES products(id)
     ) STRICT
 `);
-
 
 function insertProduct({ name, price, description }) {
     const stmt = db.prepare('INSERT INTO products (name, price, description) VALUES (?, ?, ?)');
@@ -71,9 +63,20 @@ function getSellers() {
     return db.prepare('SELECT * FROM sellers').all();
 }
 
+function insertPurchaseOrders({seller_id, product_id, purchase_date, quantity, cost, paid}) {
+    const stmt = db.prepare('INSERT INTO purchase_orders (seller_id, product_id, purchase_date, quantity, cost, paid) VALUES (?, ?, ?, ?, ?, ?)');
+    return stmt.run(seller_id, product_id, purchase_date, quantity, cost, paid);
+}
+
+function getPurchaseOrders() {
+    return db.prepare('SELECT * FROM purchase_orders ORDER BY purchase_date DESC').all();
+}
+
 module.exports = {
     insertProduct,
     getProducts,
     insertSeller,
-    getSellers
+    getSellers,
+    insertPurchaseOrders,
+    getPurchaseOrders,
 };

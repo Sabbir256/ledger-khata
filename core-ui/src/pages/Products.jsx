@@ -68,12 +68,12 @@ export default function Products() {
             <div className="flex justify-between gap-5">
               <div className="flex flex-col text-sm gap-1 flex-grow">
                 <label htmlFor="name" className="font-medium">Name</label>
-                <input name="name" type="text" onChange={handleChange} className="border border-gray-200 rounded p-2 outline-sky-200" />
+                <input name="name" type="text" required={true} onChange={handleChange} className="border border-gray-200 rounded p-2 outline-sky-200" />
               </div>
 
               <div className="flex flex-col text-sm gap-1">
                 <label htmlFor="price" className="font-medium">Price</label>
-                <input name="price" type="number" step="any" onChange={handleChange} className="border border-gray-200 rounded p-2 outline-sky-200 min-w-[200px]" />
+                <input name="price" type="number" required={true} step="any" onChange={handleChange} className="border border-gray-200 rounded p-2 outline-sky-200 min-w-[200px]" />
               </div>
             </div>
 

@@ -7,8 +7,8 @@ let mainWindow;
 
 app.whenReady().then(() => {
     mainWindow = new BrowserWindow({
-        width: 1000,
-        height: 700,
+        width: 1200,
+        height: 800,
         webPreferences: {
             preload: path.join(__dirname, 'src/preload.js'),
             nodeIntegration: false
@@ -38,3 +38,5 @@ ipcMain.handle('get-products', (event) => db.getProducts());
 ipcMain.handle('insert-product', (event, data) => db.insertProduct(data));
 ipcMain.handle('get-sellers', (event, data) => db.getSellers());
 ipcMain.handle('insert-seller', (event, data) => db.insertSeller(data));
+ipcMain.handle('insert-purchase-orders', (event, data) => db.insertPurchaseOrders(data));
+ipcMain.handle('get-purchase-orders', (event) => db.getPurchaseOrders());
